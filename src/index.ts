@@ -7,7 +7,7 @@ dotenv.config();
 (async () => {
     const masto = await Masto.login({
         uri: process.env.uri + "",
-        accessToken: process.env.token
+        accessToken: process.env.token,
     });
 
     const myAccount = await masto.verifyCredentials();
@@ -17,7 +17,7 @@ dotenv.config();
     console.log("Monitor stream...");
     const stream = await masto.streamUser();
 
-    stream.on("update", status => {
+    stream.on("update", (status) => {
         if (statusIsEai(status)) {
             const content: string = strinptags(status.content);
 
@@ -30,13 +30,13 @@ dotenv.config();
 
                         // 10分待つ
                         // min * 60sec * 1000ms
-                        await new Promise(resolve =>
+                        await new Promise((resolve) =>
                             setTimeout(resolve, 10 * 60 * 1000)
                         );
 
                         const post = await masto.createStatus({
                             status: `@${status.account.acct} 布団から出ろ`,
-                            in_reply_to_id: status.id
+                            inReplyToId: status.id,
                         });
                         console.log(`sent: ${post.url}`);
                     })();
@@ -47,7 +47,7 @@ dotenv.config();
                     (async () => {
                         const post = await masto.createStatus({
                             status: `@${status.account.acct} 起きろ`,
-                            in_reply_to_id: status.id
+                            inReplyToId: status.id,
                         });
                         console.log(`sent: ${post.url}`);
                     })();
@@ -59,7 +59,7 @@ dotenv.config();
         }
     });
 
-    stream.on("notification", notification => {
+    stream.on("notification", (notification) => {
         console.log(
             `Notification Received: ` +
                 `@${notification.account.acct} ${notification.type}`
@@ -77,7 +77,7 @@ dotenv.config();
                     (async () => {
                         const post = await masto.createStatus({
                             status: `@${status.account.acct} pong`,
-                            in_reply_to_id: status.id
+                            inReplyToId: status.id,
                         });
                         console.log(`sent: ${post.url}`);
                     })();
@@ -87,7 +87,7 @@ dotenv.config();
                     (async () => {
                         const post = await masto.createStatus({
                             status: `@${status.account.acct} 👋`,
-                            in_reply_to_id: status.id
+                            inReplyToId: status.id,
                         });
                         console.log(`sent: ${post.url}`);
                         process.exit();
@@ -104,7 +104,7 @@ dotenv.config();
                                 "稲",
                                 "🌾"
                             )}`,
-                            in_reply_to_id: status.id
+                            inReplyToId: status.id,
                         });
                         console.log(`sent: ${post.url}`);
                     })();
