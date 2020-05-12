@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import { Masto, Status } from "masto";
 import strinptags from "striptags";
+import axios from "axios";
 
 dotenv.config();
 
@@ -47,6 +48,34 @@ dotenv.config();
                     (async () => {
                         const post = await masto.createStatus({
                             status: `@${status.account.acct} 起きろ`,
+                            inReplyToId: status.id,
+                        });
+                        console.log(`sent: ${post.url}`);
+                    })();
+                    break;
+
+                case /^((寒|さむ|)い|samui)/.test(content):
+                    console.log("寒いらしい");
+                    (async () => {
+                        const currentTemperture = await axios
+                            .get(
+                                `https://api.mackerelio.com/api/v0/tsdb/latest?hostId=399ZzPd48Tw&name=custom.temperature`,
+                                {
+                                    headers: {
+                                        "X-Api-Key": process.env.mackerelToken,
+                                    },
+                                }
+                            )
+                            .then((response) => {
+                                return response.data.tsdbLatest["399ZzPd48Tw"][
+                                    "custom.temperature"
+                                ].value;
+                            });
+                        console.log(currentTemperture);
+                        const post = await masto.createStatus({
+                            status: `@${status.account.acct} ${
+                                Math.round(currentTemperture * 10) / 10
+                            }℃だぞ`,
                             inReplyToId: status.id,
                         });
                         console.log(`sent: ${post.url}`);
