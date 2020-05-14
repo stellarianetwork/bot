@@ -80,6 +80,7 @@ dotenv.config();
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: false,
+                            timeZone: "Asia/Tokyo",
                         }).format(date);
                         const temp =
                             Math.round(currentTemperture.value * 10) / 10;
