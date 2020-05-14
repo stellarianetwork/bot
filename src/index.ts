@@ -71,13 +71,22 @@ dotenv.config();
                             .then((response) => {
                                 return response.data.tsdbLatest["399ZzPd48Tw"][
                                     "custom.temperature"
-                                ].value;
+                                ];
                             });
                         console.log(currentTemperture);
+                        const date = new Date(currentTemperture.time * 1000);
+                        const diff = displayTime(currentTemperture.time * 1000);
+                        const hhmm = new Intl.DateTimeFormat(undefined, {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                        }).format(date);
+                        const temp =
+                            Math.round(currentTemperture.value * 10) / 10;
                         const post = await masto.createStatus({
-                            status: `@${status.account.acct} ${
-                                Math.round(currentTemperture * 10) / 10
-                            }℃だぞ`,
+                            status: `@${
+                                status.account.acct
+                            } ${temp}℃だぞ (${diff}, ${hhmm})`,
                             inReplyToId: status.id,
                         });
                         console.log(`sent: ${post.url}`);
@@ -158,4 +167,24 @@ function statusIsEai(status: Status) {
 
 function random(...args: string[]) {
     return args[Math.floor(Math.random() * args.length)];
+}
+
+function displayTime(unixTime: number) {
+    var date = new Date(unixTime);
+    var diff = new Date().getTime() - date.getTime();
+    var d = new Date(diff);
+
+    if (d.getUTCFullYear() - 1970) {
+        return d.getUTCFullYear() - 1970 + "年前";
+    } else if (d.getUTCMonth()) {
+        return d.getUTCMonth() + "ヶ月前";
+    } else if (d.getUTCDate() - 1) {
+        return d.getUTCDate() - 1 + "日前";
+    } else if (d.getUTCHours()) {
+        return d.getUTCHours() + "時間前";
+    } else if (d.getUTCMinutes()) {
+        return d.getUTCMinutes() + "分前";
+    } else {
+        return d.getUTCSeconds() + "秒前";
+    }
 }
