@@ -76,7 +76,7 @@ dotenv.config();
                         console.log(currentTemperture);
                         const date = new Date(currentTemperture.time * 1000);
                         const diff = displayTime(currentTemperture.time * 1000);
-                        const hhmm = new Intl.DateTimeFormat(undefined, {
+                        const hhmm = new Intl.DateTimeFormat("ja", {
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: false,
