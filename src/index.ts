@@ -54,7 +54,9 @@ dotenv.config();
                     })();
                     break;
 
-                case /^((寒|さむ)い|samui)|((暑|熱|あつ)い|at(s)?ui)/.test(content):
+                case /^((寒|さむ)い|samui)|((暑|熱|あ(っ*)つ)(い)?|at(s)?ui)/.test(
+                    content
+                ):
                     console.log("温度が気に入らんらしい");
                     (async () => {
                         const currentTemperture = await axios
