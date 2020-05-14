@@ -84,7 +84,7 @@ dotenv.config();
                         const temp =
                             Math.round(currentTemperture.value * 10) / 10;
                         const post = await masto.createStatus({
-                            status: `@${status.account.acct} ${temp}℃だぞ (${diff}, ${hhmm})`,
+                            status: `@${status.account.acct} ${temp}℃だぞ (${diff}, ${hhmm}) https://mm0ty.csb.app/`,
                             inReplyToId: status.id,
                         });
                         console.log(`sent: ${post.url}`);
