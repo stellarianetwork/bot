@@ -168,10 +168,11 @@ function random(...args: string[]) {
     return args[Math.floor(Math.random() * args.length)];
 }
 
+// https://qiita.com/dmikurube/items/15899ec9de643e91497c
 function displayTime(unixTime: number) {
-    var date = new Date(unixTime);
-    var diff = new Date().getTime() - date.getTime();
-    var d = new Date(diff);
+    const date = new Date(unixTime);
+    const diff = new Date().getTime() - date.getTime();
+    const d = new Date(diff);
 
     if (d.getUTCFullYear() - 1970) {
         return d.getUTCFullYear() - 1970 + "年前";
