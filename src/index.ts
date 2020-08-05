@@ -23,7 +23,7 @@ dotenv.config();
             const content: string = strinptags(status.content);
 
             switch (true) {
-                case /^(うん|ウン)とか(すん|スン))/.test(content):
+                case /^(うん|ウン)とか(すん|スン)/.test(content):
                     console.log("起きたらしい");
 
                     (async () => {
