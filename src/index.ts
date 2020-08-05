@@ -23,6 +23,18 @@ dotenv.config();
             const content: string = strinptags(status.content);
 
             switch (true) {
+                case /^(うん|ウン)とか(すん|スン))/.test(content):
+                    console.log("起きたらしい");
+
+                    (async () => {
+                        const post = await masto.createStatus({
+                            status: `@${status.account.acct} すん`,
+                            inReplyToId: status.id,
+                        });
+                        console.log(`sent: ${post.url}`);
+                    })();
+                    break;
+
                 case /^起き(た|ました)/.test(content):
                     console.log("起きたらしい");
 
