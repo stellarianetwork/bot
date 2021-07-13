@@ -23,6 +23,16 @@ dotenv.config();
             const content: string = strinptags(status.content);
 
             switch (true) {
+                case /whoami/.test(content):
+
+                    (async () => {
+                        const post = await masto.createStatus({
+                            status: `えあい（watchtowerのテスト）`,
+                        });
+                        console.log(`sent: ${post.url}`);
+                    })();
+                    break;
+
                 case /^(うん|ウン)とか(すん|スン)/.test(content):
                     console.log("起きたらしい");
 
