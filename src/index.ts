@@ -1,22 +1,22 @@
 import dotenv from "dotenv";
-import { Masto, Status } from "masto";
+import { login, Status } from "masto";
 import strinptags from "striptags";
 import axios from "axios";
 
 dotenv.config();
 
 (async () => {
-    const masto = await Masto.login({
-        uri: process.env.uri + "",
+    const masto = await login({
+        url: process.env.uri + "",
         accessToken: process.env.token,
     });
 
-    const myAccount = await masto.verifyCredentials();
+    const myAccount = await masto.accounts.verifyCredentials();
     console.log(`I'am @${myAccount.acct}`);
     console.log(`${myAccount.url}`);
 
     console.log("Monitor stream...");
-    const stream = await masto.streamUser();
+    const stream = await masto.stream.streamUser();
 
     stream.on("update", (status) => {
         if (statusIsEai(status)) {
@@ -24,9 +24,8 @@ dotenv.config();
 
             switch (true) {
                 case /whoami/.test(content):
-
                     (async () => {
-                        const post = await masto.createStatus({
+                        const post = await masto.statuses.create({
                             status: `えあい（watchtowerのテスト）`,
                         });
                         console.log(`sent: ${post.url}`);
@@ -37,7 +36,7 @@ dotenv.config();
                     console.log("起きたらしい");
 
                     (async () => {
-                        const post = await masto.createStatus({
+                        const post = await masto.statuses.create({
                             status: `@${status.account.acct} すん`,
                             inReplyToId: status.id,
                         });
@@ -49,7 +48,7 @@ dotenv.config();
                     console.log("起きたらしい");
 
                     (async () => {
-                        await masto.favouriteStatus(status.id);
+                        await masto.statuses.favourite(status.id);
 
                         // 10分待つ
                         // min * 60sec * 1000ms
@@ -57,7 +56,7 @@ dotenv.config();
                             setTimeout(resolve, 10 * 60 * 1000)
                         );
 
-                        const post = await masto.createStatus({
+                        const post = await masto.statuses.create({
                             status: `@${status.account.acct} 布団から出ろ`,
                             inReplyToId: status.id,
                         });
@@ -68,7 +67,7 @@ dotenv.config();
                 case /^寝た/.test(content):
                     console.log("寝たたらしい");
                     (async () => {
-                        const post = await masto.createStatus({
+                        const post = await masto.statuses.create({
                             status: `@${status.account.acct} 起きろ`,
                             inReplyToId: status.id,
                         });
@@ -77,7 +76,9 @@ dotenv.config();
                     break;
 
                 case /^((寒|[サさ]([ッっ]*)[ムむ])(い)?|samui)/.test(content):
-                case /^((暑|熱|[アあ]([ッっ]*)[ツつ])(い)?|at(s)?ui)/.test(content):
+                case /^((暑|熱|[アあ]([ッっ]*)[ツつ])(い)?|at(s)?ui)/.test(
+                    content
+                ):
                     console.log("温度が気に入らんらしい");
                     (async () => {
                         const currentTemperture = await axios
@@ -85,7 +86,7 @@ dotenv.config();
                                 `https://api.mackerelio.com/api/v0/tsdb/latest?hostId=399ZzPd48Tw&name=custom.temperature`,
                                 {
                                     headers: {
-                                        "X-Api-Key": process.env.mackerelToken,
+                                        "X-Api-Key": process.env.mackerelToken!,
                                     },
                                 }
                             )
@@ -105,7 +106,7 @@ dotenv.config();
                         }).format(date);
                         const temp =
                             Math.round(currentTemperture.value * 10) / 10;
-                        const post = await masto.createStatus({
+                        const post = await masto.statuses.create({
                             status: `@${status.account.acct} ${temp}℃だぞ (${diff}, ${hhmm}) https://eai.house/`,
                             inReplyToId: status.id,
                         });
@@ -135,7 +136,7 @@ dotenv.config();
             switch (true) {
                 case /^@.+ ping/.test(content):
                     (async () => {
-                        const post = await masto.createStatus({
+                        const post = await masto.statuses.create({
                             status: `@${status.account.acct} pong`,
                             inReplyToId: status.id,
                         });
@@ -145,7 +146,7 @@ dotenv.config();
 
                 case /^@.+ kill/.test(content):
                     (async () => {
-                        const post = await masto.createStatus({
+                        const post = await masto.statuses.create({
                             status: `@${status.account.acct} 👋`,
                             inReplyToId: status.id,
                         });
@@ -156,7 +157,7 @@ dotenv.config();
 
                 case /^@.+ (もう)?[で出](まし)?た/.test(content):
                     (async () => {
-                        const post = await masto.createStatus({
+                        const post = await masto.statuses.create({
                             status: `@${status.account.acct} ${random(
                                 "えらい",
                                 "🙆",
