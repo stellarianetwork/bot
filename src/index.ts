@@ -5,7 +5,7 @@ import axios from "axios";
 
 dotenv.config();
 
-(async () => {
+const main = async () => {
     const masto = await login({
         url: process.env.uri + "",
         accessToken: process.env.token,
@@ -173,7 +173,11 @@ dotenv.config();
             }
         }
     });
-})();
+};
+
+main().catch((err) => {
+    console.error(Object.getOwnPropertyNames(err), err.message);
+});
 
 function statusIsEai(status: Status) {
     if (
